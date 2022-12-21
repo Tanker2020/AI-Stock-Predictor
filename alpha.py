@@ -277,6 +277,7 @@ def AI(currStock,dataframe):
     test_features = test_dataset.copy()
     
     train_labels = train_features.pop('avgprice')
+    test_labels = test_features.pop('avgprice')
     
     normalizer = tf.keras.layers.Normalization(axis=-1)
     normalizer.adapt(np.array(train_features))
@@ -296,8 +297,10 @@ def AI(currStock,dataframe):
     y = model.predict(test_features).flatten()
     
     for i in range(len(y)):
-        y[i] =y[i]+stocks[currStock]['avgprice'][-1]
+        y[i] =y[i]+stocks[currStock]['avgprice'][-1]    
         
+    y = y.tolist()
+    
     print(y[30:])
     
 def build_and_compile_model(norm):
