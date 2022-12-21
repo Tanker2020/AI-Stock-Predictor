@@ -268,18 +268,6 @@ def getIncomeSentimentVal(currStock):
 #due to timings of datasets not matching up there will need to be masking 
 #Actual AI code for multivariate linear regression
 def AI(currStock,dataframe):
-    #df = getPandData()
-    #print(tf.convert_to_tensor(df))
-    bob="""xs = stocks[currStock]['Time']   
-    ys = np.stack((
-        np.array(stocks[currStock]['avgprice']),
-        np.array(stocks[currStock]['volume']),
-        np.array(stocks[currStock]['Income']),
-        np.array(stocks[currStock]['Cash_Flow']),
-        np.array(stocks[currStock]['GDP']),
-        np.array(stocks[currStock]['Inflation']),
-        np.array(stocks[currStock]['Unemployment'])
-    ),1)"""
     
     #what is the labels vs features
     train_dataset = dataframe.sample(frac=0.8, random_state=0)
@@ -289,7 +277,6 @@ def AI(currStock,dataframe):
     test_features = test_dataset.copy()
     
     train_labels = train_features.pop('avgprice')
-    test_labels = test_features.pop('avgprice')
     
     normalizer = tf.keras.layers.Normalization(axis=-1)
     normalizer.adapt(np.array(train_features))
@@ -311,31 +298,8 @@ def AI(currStock,dataframe):
     for i in range(len(y)):
         y[i] =y[i]+stocks[currStock]['avgprice'][-1]
         
-    print(y)
+    print(y[30:])
     
-    a = plt.axes(aspect='equal')
-    plt.scatter(test_labels, y)
-    plt.xlabel('True Values [avgprice]')
-    plt.ylabel('Predictions [avgprice]')
-    lims = [0,300]
-    plt.xlim(lims)
-    plt.ylim(lims)
-    _ = plt.plot(lims, lims)
-    plt.show()
-    
-    test="""
-    model = tf.keras.Sequential([
-        tf.keras.layers.Normalization(axis=-1),
-        tf.keras.layers.Dense(units=1)
-    ])
-    model.add(tf.keras.layers.Masking(mask_value=0))
-    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.1),
-                  loss='mean_absolute_error')
-    history = model.fit(test_features,test_labels,epochs=500)
-    y = model.predict(test_features[:10])
-    print(model)
-    print(y)"""
-
 def build_and_compile_model(norm):
     model = tf.keras.Sequential([
         norm,
@@ -352,6 +316,7 @@ def build_and_compile_model(norm):
     return model
 
 def StartAIPrediction():
-    getPandData()
+    if __name__ == "__main__":
+        getPandData()
     
 StartAIPrediction()
