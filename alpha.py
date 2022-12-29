@@ -301,7 +301,10 @@ def AI(currStock,dataframe):
         
     y = y.tolist()
     
-    print(y[30:])
+    data = {'Predicted Price': [y[21:]], 'Actual Price': [test_labels[21:]], 'Time': [test_features['Time'][21:]]}
+    dataFrame = pd.DataFrame(data)
+    print (dataFrame)
+    
     
 def build_and_compile_model(norm):
     model = tf.keras.Sequential([
